@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="h1thing">
+        <h1>Who do you want to know more about?</h1>
+    </div>
+    <form action="/" method="POST">
+        <!-- Dropdown for selecting politician -->
+        {% if politician %}
+        <select name="politician" onchange="this.form.submit()">
+            <option selected>{{ politician.name }}</option>
+            {% for option in options %}
+                <option value = "{{ option.name }}">{{ option.name }}</option>
+            {% endfor %}
+        </select>
+
+        {% else %}
+        <select name="politician" onchange="this.form.submit()">
+            <option selected disabled>Select a politician</option>
+            {% for option in options %}
+                <option value = "{{ option.name }}">{{ option.name }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+        <!-- Dropdown for categories -->
+        {% if category %}
+        <select name="categories" onchange="this.form.submit()">
+            <option selected>{{ category }}</option>
+            {% for categor in categories %}
+                <option value = "{{ categor }}">{{ categor }}</option>
+            {% endfor %}
+        </select>
+
+        {% else %}
+        <select name="categories" onchange="this.form.submit()">
+            <option selected disabled>Select a category</option>
+            {% for categor in categories %}
+                <option value = "{{ categor }}">{{ categor }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+
+    </form>
+<br>
+    {% if info %}
+    <div class="grid-container">
+        {% for information in info %}
+          <div class="box1">{{information[0] }}</div>
+          <div class="box2">
+              <h3>{{ information[1] }}</h3>
+              <p>{{ information[2] }} </p>
+              <p>Read more here</p>
+          </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="h1thing">
+        <h1>Did we miss an article?</h1>
+    </div>
+
+    <form action="/" method="POST">
+        <input type="text" id="url" name="give url">
+        <button class="btn" type="submit" name="submit-btn" value="submit" onclick="this.form.submit()">Submit</button>
+    </form>
+
+
+
+    {% endif %}
+
+{% endblock content %}

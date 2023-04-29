@@ -29,7 +29,8 @@ app.post('/post', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     console.log("New express client");
     console.log("Received: ");
-    console.log(JSON.parse(req.query['data']));
+    console.log("START HERE");
+    console.log(req.query['data']);
     var requestInfo = JSON.parse(req.query['data']);
 
     if (requestInfo['action'].includes('newArticle')) {
