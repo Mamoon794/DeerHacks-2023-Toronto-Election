@@ -22,18 +22,10 @@ let transit = 0;
 let crime = 0;
 let housing = 0;
 
-
-// const testWebsite = "https://www.cp24.com/news/poll-places-olivia-chow-in-lead-in-toronto-mayoral-race-1.6376015"
-// const testWebsite = "https://www.thestar.com/news/gta/2023/04/28/olivia-chow-leads-latest-toronto-election-polls-but-the-most-popular-choice-for-mayor-isnt-even-on-the-ballot.html"
-// const testWebsite = "https://toronto.ctvnews.ca/poll-places-olivia-chow-in-lead-in-toronto-mayoral-race-1.6376024"
-// const testWebsite = "https://www.cbc.ca/news/canada/toronto/olivia-chow-toronto-mayor-byelection-1.6812750";
-// const testWebsite = "https://www.cbc.ca/news/canada/toronto/city-council-docking-pay-josh-matlow-1.6798416";
-
 app.post('/post', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     console.log("New express client");
     console.log("Received: ");
-    console.log("START HERE");
     console.log(req.query['data']);
     var requestInfo = JSON.parse(req.query['data']);
 
@@ -81,6 +73,12 @@ async function newArticle(testWebsite) {
         websiteText = await scrapeWebsite(testWebsite, puppeteerSelector);
         websiteText = websiteText.join(" ").replace(/\s+/g,' ').trim();
         network = "Toronto Star";
+    }
+    else if (testWebsite.includes("torontosun")) {
+        puppeteerSelector = "section p";
+        websiteText = await scrapeWebsite(testWebsite, puppeteerSelector);
+        websiteText = websiteText.join().trim();
+        network = "Toronto Sun"
     }
     else {
         console.log("Unsupported website");

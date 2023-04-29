@@ -3,7 +3,7 @@ import json
 import requests
 app = Flask(__name__)
 
-url = "http://localhost:3000/post"
+url = "http://localhost:3000/post?"
 
 categories = ['tax', 'transit', 'therapy', 'drug', 'water', 'fire']
 people = [{
