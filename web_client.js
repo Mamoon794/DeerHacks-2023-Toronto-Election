@@ -8,6 +8,15 @@ function newArticle() {
     console.log("Sent article!");
 }
 
+function retriveArticle() {
+    $.post(url+'?data='+JSON.stringify({
+        'action': 'retrieveArticle',
+        'candidate': document.getElementById("candidate").value,
+        'topic': document.getElementById("topic").value
+    }), response)
+    console.log("Sent article!");
+}
+
 function response(data, status) {
     var response = JSON.parse(data);
     console.log(data);

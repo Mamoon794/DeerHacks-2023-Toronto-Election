@@ -1,6 +1,7 @@
 import {scrapeWebsite} from "./puppeteerScrape.js";
 import {cohereClassify, cohereSummary} from "./cohereSummary.js";
 import {writeMongo} from "./mongoDatabase.js";
+import {fetchDB} from "./mongoDatabase.js";
 import cohere from "cohere-ai";
 
 // const { json } = require('express');
@@ -37,9 +38,12 @@ app.post('/post', async (req, res) => {
             'message': message
         });
         res.send(jsontext);
-    } else if (requestInfo['action'].includes('guess')) {
+    } else if (requestInfo['action'].includes('retrieveArticle')) {
+        let articles = await fetchDB(requestInfo['candidate'], requestInfo['topic'])
+        console.log(articles);
         var jsontext = JSON.stringify({
-            'action': 'guess',
+            'action': 'retrieveArticle',
+            'message': articles
         });
         res.send(jsontext);
     }

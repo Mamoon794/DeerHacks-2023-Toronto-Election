@@ -15,9 +15,29 @@
 </div>
 <div id="container">
     <h2>Learn about who?</h2>
+    <label for="candidate">Choose a Candidate:</label>
+    <select name="candidate" id="candidate">
+        <option value="chow">Olivia Chow</option>
+        <option value="bailao">Ana Bailao</option>
+        <option value="matlow">Josh Matlow</option>
+        <option value="saunders">Mark Saunders</option>
+        <option value="bradford">Brad Bradford</option>
+        <option value="hunter">Mitzie Hunter</option>
+    </select>
+    <br><br>
+
+    <label for="topic">Choose a Topic:</label>
+    <select name="topic" id="topic">
+        <option value="transit">Public Transit</option>
+        <option value="taxes">Taxes</option>
+    </select>
+    <button id="tempSubmitTopic" onclick="retriveArticle()">Search</button>
+    <br><br>
+
+    <h2>Did we miss an article?</h2>
     <label for="articleLink">Article Link:</label>
-    <input type="text" id="articleLink" name="articleLink"><br><br>
-    <p><button id="submitArticle" onclick="newArticle()">Submit Article</button></p>
+    <input type="text" id="articleLink" name="articleLink">
+    <button id="submitArticle" onclick="newArticle()">Submit Article</button>
 </div>
 </body>
 
