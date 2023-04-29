@@ -1,18 +1,17 @@
 [
- {'text':'In its budget released late last month, the Progressive Conservatives pledged to spend $61.6 billion over 10 years for public transit, including on the Ontario Line in Toronto, expanding GO Transit from Oshawa to Bowmanville, the London GO Rail Service, which will provide weekday GO train trips between London and Union Station in Toronto.', 'label':'pro transit'}
- {'text':"The New Democrats are pledging to spend $3.6 billion over four years on transit operations — they've earmarked $898 million per year to cover half of municipalities' transit operations.", 'pro transit'},
- {'text':"I recognize the vital role that public transit plays in connecting our communities, reducing traffic congestion, and improving the quality of life for our residents. I am committed to investing in modern, reliable, and accessible public transportation that serves the needs of all Torontonians, regardless of their income or location. By working together with our transit agencies and community partners, we can build a city that is more sustainable, equitable, and prosperous for everyone.", 'label':'pro transit'}
- {'text':"Recognizing the needs of the constituents in her Toronto riding, she introduced legislation for universal child care and improving public transit.", 'label':'pro transit'},
- {'text':"Toronto mayoral candidate Olivia Chow released her full campaign platform Friday with measures aimed at everything from improving transit to expanding the city's tree canopy.", 'label':'pro transit'},
- {'text':"Brad Bradford and his family understand, firsthand, the challenges of finding a home in Toronto. For many, Toronto is just too expensive. ", 'label':'pro housing'},
- {'text':"If we want a vibrant city that attracts and retains the best and brightest, we need to ensure there is housing available at every price point. The promise of Toronto is predicated on that idea that if you want to build your life here, we want to have you.", 'label':'pro housing'},
- {'text':" That insight informs his plan to address the affordability crisis in this city by providing more housing for more people.", 'label':'pro housing'},
- {'text':"There needs to be less talk about housing and more action to get it built, and Brad’s housing plan will do just that. Brad’s plan will:", 'label':'pro housing'},
- {'text':"Provide safe housing to more people by introducing rapid shelters like sleeping pods and modular housing.", 'label':'pro housing'},
- {'text':"We must stand up against the stabbings and the killings and the gun violence.", 'label':'anti crime'},
- {'text':"Olivia promisses to adress the public's concern for safety.", 'label':'anti crime'},
- {'text':"The safety of our public should be our number 1 priority.", 'label':'anti crime'},
- {'text':"We should not tolerate kidnappings and stabbings ever.", 'label':'anti crime'},
- {'text':"Marcus shows concern for the growing murder rate.", 'label':'anti crime'}
+  {"text":"In its budget released late last month, the Progressive Conservatives pledged to spend $61.6 billion over 10 years for public transit, including on the Ontario Line in Toronto, expanding GO Transit from Oshawa to Bowmanville, the London GO Rail Service, which will provide weekday GO train trips between London and Union Station in Toronto.", "label":"pro transit"},
+  {"text":"The New Democrats are pledging to spend $3.6 billion over four years on transit operations — they've earmarked $898 million per year to cover half of municipalities' transit operations.", "label": "pro transit"},
+  {"text":"I recognize the vital role that public transit plays in connecting our communities, reducing traffic congestion, and improving the quality of life for our residents. I am committed to investing in modern, reliable, and accessible public transportation that serves the needs of all Torontonians, regardless of their income or location. By working together with our transit agencies and community partners, we can build a city that is more sustainable, equitable, and prosperous for everyone.", "label":"pro transit"},
+  {"text":"Recognizing the needs of the constituents in her Toronto riding, she introduced legislation for universal child care and improving public transit.", "label":"pro transit"},
+  {"text":"Toronto mayoral candidate Olivia Chow released her full campaign platform Friday with measures aimed at everything from improving transit to expanding the city's tree canopy.", "label": "pro transit"},
+  {"text":"Brad Bradford and his family understand, firsthand, the challenges of finding a home in Toronto. For many, Toronto is just too expensive. ", "label":"pro housing"},
+  {"text":"If we want a vibrant city that attracts and retains the best and brightest, we need to ensure there is housing available at every price point. The promise of Toronto is predicated on that idea that if you want to build your life here, we want to have you.", "label":"pro housing"},
+  {"text":"That insight informs his plan to address the affordability crisis in this city by providing more housing for more people.", "label":"pro housing"},
+  {"text":"There needs to be less talk about housing and more action to get it built, and Brad’s housing plan will do just that. Brad’s plan will:", "label":"pro housing"},
+  {"text":"Provide safe housing to more people by introducing rapid shelters like sleeping pods and modular housing.", "label":"pro housing"},
+  {"text":"We must stand up against the stabbings and the killings and the gun violence.", "label":"anti crime"},
+  {"text":"Olivia promisses to adress the public's concern for safety.", "label":"anti crime"},
+  {"text":"The safety of our public should be our number 1 priority.", "label":"anti crime"},
+  {"text":"We should not tolerate kidnappings and stabbings ever.", "label":"anti crime"},
+  {"text":"Marcus shows concern for the growing murder rate.", "label":"anti crime"}
 ]
-
