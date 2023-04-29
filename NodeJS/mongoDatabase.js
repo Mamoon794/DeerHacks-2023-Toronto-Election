@@ -12,7 +12,7 @@ dotenv.config();
 const mongo_key = process.env.MONGO_API_KEY;
 
 // writes the information to MongoDB
-export async function writeMongo(link, network, summary, candidate, transitSentiment, taxSentiment) {
+export async function writeMongo(link, network, summary, candidate, transitSentiment, crimeSentiment, housingSentiment, sentiment) {
     var data = JSON.stringify({
         "collection": mongoCollection,
         "database": mongoDatabase,
@@ -22,8 +22,10 @@ export async function writeMongo(link, network, summary, candidate, transitSenti
             network: network,
             summary: summary,
             candidate: candidate,
+            sentiment: sentiment,
             transitSentiment: transitSentiment,
-            taxSentiment: taxSentiment
+            crimeSentiment: crimeSentiment,
+            housingSentiment: housingSentiment
         }
     });
 
@@ -50,12 +52,12 @@ export async function writeMongo(link, network, summary, candidate, transitSenti
 }
 
 // fetches information from database
-export async function fetchDB (candidate, topic) {
+export async function fetchDB (candidate, sentiment) {
     var data = JSON.stringify({
         "collection": mongoCollection,
         "database": mongoDatabase,
         "dataSource": mongoDataSource,
-        "filter": {"candidate": candidate, "topic": topic},
+        "filter": {"candidate": candidate, "sentiment": sentiment},
         // maximum number of results that are returned from database
         "limit": 5
     });

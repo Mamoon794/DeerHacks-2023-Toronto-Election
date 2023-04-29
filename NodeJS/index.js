@@ -18,6 +18,10 @@ let websiteText = "";
 let summary = "";
 let network = "";
 let candidate = "";
+let transit = 0;
+let crime = 0;
+let housing = 0;
+
 
 // const testWebsite = "https://www.cp24.com/news/poll-places-olivia-chow-in-lead-in-toronto-mayoral-race-1.6376015"
 // const testWebsite = "https://www.thestar.com/news/gta/2023/04/28/olivia-chow-leads-latest-toronto-election-polls-but-the-most-popular-choice-for-mayor-isnt-even-on-the-ballot.html"
@@ -85,9 +89,27 @@ async function newArticle(testWebsite) {
     // console.log(websiteText);
     summary = await cohereSummary(websiteText);
     console.log(summary);
-    candidate = await cohereClassify(websiteText);
-    // console.log(candidate);
-    // await writeMongo(testWebsite, network, summary, candidate, 0.9, 0.7);
+    candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+    console.log(candidate);
+    let sentiment = await cohereClassify(websiteText);
+    console.log(sentiment.prediction);
+    console.log(sentiment.confidence);
+    if (sentiment.prediction.includes("pro-transit")) {
+        transit = sentiment.confidence;
+        crime = 0;
+        housing = 0;
+    }
+    else if (sentiment.prediction.includes("anti-crime")) {
+        transit = 0;
+        crime = sentiment.confidence;
+        housing = 0;
+    }
+    else if (sentiment.prediction.includes("pro-housing")) {
+        transit = 0;
+        crime = 0;
+        housing = sentiment.confidence;
+    }
+    await writeMongo(testWebsite, network, summary, candidate, transit, crime, housing, sentiment.prediction);
     return "Wrote to database";
 }
 
