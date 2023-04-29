@@ -1,0 +1,21 @@
+h1 {
+    text-align: center;
+}
+
+#title {
+    margin-top: 10%;
+    font-size: 130%;
+}
+
+#candidate-selection {
+    text-align: center;
+}
+
+#candidate-selection select {
+    margin-left: 2%;
+    margin-right: 2%;
+    padding-right: 3%;
+    background-color: lightgrey;
+    border-radius: 0.5em;
+    font-size: 110%;
+}
