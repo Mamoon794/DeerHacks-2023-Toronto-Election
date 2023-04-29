@@ -2,12 +2,14 @@ import {scrapeWebsite} from "./puppeteerScrape.js";
 import {cohereClassify, cohereSummary} from "./cohereSummary.js";
 import {writeMongo} from "./mongoDatabase.js";
 import {fetchDB} from "./mongoDatabase.js";
+import {scrapeLinks} from "./puppeteerScrape.js";
 import cohere from "cohere-ai";
 
 // const { json } = require('express');
 import {json} from "express";
 // var express  = require('express');
 import express from "express";
+import puppeteer from "puppeteer";
 var app = express();
 var port = 3000;
 
@@ -88,3 +90,68 @@ async function newArticle(testWebsite) {
     // await writeMongo(testWebsite, network, summary, candidate, 0.9, 0.7);
     return "Wrote to database";
 }
+
+async function refreshCandidates() {
+    // matlow
+    // let linkList = await scrapeLinks("https://www.votematlow.ca/news");
+    // let finalList = [];
+    // let counter = 0;
+    // for (var i in linkList) {
+    //     if (linkList[i][0].includes("news/")) {
+    //         finalList[counter] = linkList[i][0];
+    //         counter++;
+    //     }
+    // }
+    // finalList = [...new Set(finalList)];
+    // console.log(finalList);
+    // for (var i in finalList) {
+    //     let websiteText = await scrapeWebsite(finalList[i],".sqs-block-content");
+    //     websiteText = websiteText[0].replace(/\s+/g,' ').trim();
+    //     // console.log(websiteText);
+    //     summary = await cohereSummary(websiteText);
+    //     console.log(summary);
+    //     candidate = await cohereClassify(websiteText);
+    //     console.log(candidate);
+    // }
+
+    // chow
+    // let linkList = await scrapeLinks("https://www.oliviachow.ca/updates");
+    // console.log(linkList);
+    // let finalList = [];
+    // let counter = 0;
+    // for (var i in linkList) {
+    //     // console.log(linkList[i][0]);
+    //     if (linkList[i][0].includes("https://www.oliviachow.ca/") && linkList[i][0].includes("_") && !linkList[i][0].includes("user_sessions")) {
+    //         finalList[counter] = linkList[i][0];
+    //         counter++;
+    //     }
+    // }
+    // finalList = [...new Set(finalList)];
+    // console.log(finalList[0]);
+    // let websiteText = await scrapeWebsite(finalList[0],".intro inner-spacing");
+    // console.log(websiteText);
+
+    // mitzie
+    let linkList = await scrapeLinks("https://www.mitzieformayor.ca/news");
+    console.log(linkList);
+    let finalList = [];
+    let counter = 0;
+    for (var i in linkList) {
+        // console.log(linkList[i][0]);
+        if (linkList[i][0].includes("https://www.mitzieformayor.ca")) {
+            finalList[counter] = linkList[i][0];
+            counter++;
+        }
+    }
+    console.log(finalList);
+    for (var i in finalList) {
+        let websiteText = await scrapeWebsite(finalList[i],".wixui-rich-text__text");
+        websiteText = websiteText.join().replace(/\s+/g,' ').trim();
+        // console.log(websiteText);
+        summary = await cohereSummary(websiteText);
+        console.log(summary);
+        candidate = await cohereClassify(websiteText);
+        console.log(candidate);
+    }
+}
+refreshCandidates();
