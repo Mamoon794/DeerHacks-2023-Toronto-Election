@@ -93,49 +93,56 @@ async function newArticle(testWebsite) {
 
 async function refreshCandidates() {
     // matlow
-    // let linkList = await scrapeLinks("https://www.votematlow.ca/news");
-    // let finalList = [];
-    // let counter = 0;
-    // for (var i in linkList) {
-    //     if (linkList[i][0].includes("news/")) {
-    //         finalList[counter] = linkList[i][0];
-    //         counter++;
-    //     }
-    // }
-    // finalList = [...new Set(finalList)];
-    // console.log(finalList);
-    // for (var i in finalList) {
-    //     let websiteText = await scrapeWebsite(finalList[i],".sqs-block-content");
-    //     websiteText = websiteText[0].replace(/\s+/g,' ').trim();
-    //     // console.log(websiteText);
-    //     summary = await cohereSummary(websiteText);
-    //     console.log(summary);
-    //     candidate = await cohereClassify(websiteText);
-    //     console.log(candidate);
-    // }
-
-    // chow
-    // let linkList = await scrapeLinks("https://www.oliviachow.ca/updates");
-    // console.log(linkList);
-    // let finalList = [];
-    // let counter = 0;
-    // for (var i in linkList) {
-    //     // console.log(linkList[i][0]);
-    //     if (linkList[i][0].includes("https://www.oliviachow.ca/") && linkList[i][0].includes("_") && !linkList[i][0].includes("user_sessions")) {
-    //         finalList[counter] = linkList[i][0];
-    //         counter++;
-    //     }
-    // }
-    // finalList = [...new Set(finalList)];
-    // console.log(finalList[0]);
-    // let websiteText = await scrapeWebsite(finalList[0],".intro inner-spacing");
-    // console.log(websiteText);
-
-    // mitzie
-    let linkList = await scrapeLinks("https://www.mitzieformayor.ca/news");
-    console.log(linkList);
+    let linkList = await scrapeLinks("https://www.votematlow.ca/news");
     let finalList = [];
     let counter = 0;
+    for (var i in linkList) {
+        if (linkList[i][0].includes("news/")) {
+            finalList[counter] = linkList[i][0];
+            counter++;
+        }
+    }
+    finalList = [...new Set(finalList)];
+    console.log(finalList);
+    for (var i in finalList) {
+        websiteText = await scrapeWebsite(finalList[i],".sqs-block-content");
+        websiteText = websiteText[0].replace(/\s+/g,' ').trim();
+        console.log(websiteText);
+        summary = await cohereSummary(websiteText);
+        console.log(summary);
+        candidate = await cohereClassify(websiteText);
+        console.log(candidate);
+    }
+
+    // chow
+    linkList = await scrapeLinks("https://www.oliviachow.ca/updates");
+    // console.log(linkList);
+    finalList = [];
+    counter = 0;
+    for (var i in linkList) {
+        // console.log(linkList[i][0]);
+        if (linkList[i][0].includes("https://www.oliviachow.ca/") && linkList[i][0].includes("_") && !linkList[i][0].includes("user_sessions")) {
+            finalList[counter] = linkList[i][0];
+            counter++;
+        }
+    }
+    finalList = [...new Set(finalList)];
+    console.log(finalList);
+    for (var i in finalList) {
+        websiteText = await scrapeWebsite(finalList[i],"div p");
+        websiteText = websiteText.join().trim();
+        console.log(websiteText);
+        summary = await cohereSummary(websiteText);
+        console.log(summary);
+        candidate = await cohereClassify(websiteText);
+        console.log(candidate);
+    }
+
+    // mitzie
+    linkList = await scrapeLinks("https://www.mitzieformayor.ca/news");
+    // console.log(linkList);
+    finalList = [];
+    counter = 0;
     for (var i in linkList) {
         // console.log(linkList[i][0]);
         if (linkList[i][0].includes("https://www.mitzieformayor.ca")) {
@@ -145,13 +152,85 @@ async function refreshCandidates() {
     }
     console.log(finalList);
     for (var i in finalList) {
-        let websiteText = await scrapeWebsite(finalList[i],".wixui-rich-text__text");
+        websiteText = await scrapeWebsite(finalList[i],".wixui-rich-text__text");
         websiteText = websiteText.join().replace(/\s+/g,' ').trim();
-        // console.log(websiteText);
+        console.log(websiteText);
+        summary = await cohereSummary(websiteText);
+        console.log(summary);
+        candidate = await cohereClassify(websiteText);
+        console.log(candidate);
+    }
+
+    // bailao
+    linkList = await scrapeLinks("https://anabailao.ca/latest-news");
+    // console.log(linkList);
+    finalList = [];
+    counter = 0;
+    for (var i in linkList) {
+        // console.log(linkList[i][0]);
+        if (linkList[i][0].includes("https://anabailao.ca/latest-news/") && linkList[i][0].includes("-")) {
+            finalList[counter] = linkList[i][0];
+            counter++;
+        }
+    }
+    console.log(finalList);
+    for (var i in finalList) {
+        websiteText = await scrapeWebsite(finalList[i],"span");
+        websiteText = websiteText.join().replace(/\s+/g,' ').trim();
+        console.log(websiteText)
+        summary = await cohereSummary(websiteText);
+        console.log(summary);
+        candidate = await cohereClassify(websiteText);
+        console.log(candidate);
+    }
+
+    // bradford
+    linkList = await scrapeLinks("https://www.votebradford.ca/priorities");
+    // console.log(linkList);
+    finalList = [];
+    counter = 0;
+    for (var i in linkList) {
+        // console.log(linkList[i][0]);
+        if (linkList[i][0].includes("https://www.votebradford.ca/")) {
+            finalList[counter] = linkList[i][0];
+            counter++;
+        }
+    }
+    for (var i = 0; i < 8; i++) {
+        finalList.shift();
+    }
+    console.log(finalList);
+    for (var i in finalList) {
+        websiteText = await scrapeWebsite(finalList[i],"p span");
+        websiteText = websiteText.join().trim();
+        console.log(websiteText)
+        summary = await cohereSummary(websiteText);
+        console.log(summary);
+        candidate = await cohereClassify(websiteText);
+        console.log(candidate);
+    }
+
+    // saunders
+    linkList = await scrapeLinks("https://marksaundersfortoronto.ca/news");
+    // console.log(linkList);
+    finalList = [];
+    counter = 0;
+    for (var i in linkList) {
+        // console.log(linkList[i][0]);
+        if (linkList[i][0].includes("https://marksaundersfortoronto.ca/news/")) {
+            finalList[counter] = linkList[i][0];
+            counter++;
+        }
+    }
+    console.log(finalList);
+    for (var i in finalList) {
+        websiteText = await scrapeWebsite(finalList[i],"div p");
+        websiteText = websiteText.join().trim();
+        console.log(websiteText)
         summary = await cohereSummary(websiteText);
         console.log(summary);
         candidate = await cohereClassify(websiteText);
         console.log(candidate);
     }
 }
-refreshCandidates();
+// refreshCandidates();
