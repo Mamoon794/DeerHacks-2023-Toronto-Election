@@ -42,13 +42,30 @@
 
     </form>
 <br>
+
+    {% if politician and not category %}
+    <br>
+        <a href=" {{ politician.socials[0] }}">
+        <img src="{{ url_for('static', filename='twitter.png') }}" alt="Description of the image">
+        </a>
+&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+       <a href=" {{ politician.socials[1] }}">
+        <img src="{{ url_for('static', filename='insta.png') }}" alt="Description of the image">
+        </a>
+&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+       <a href=" {{ politician.socials[2] }}">
+        <img src="{{ url_for('static', filename='link.png') }}" alt="Description of the image">
+        </a>
+    {% endif %}
+
+
     {% if info %}
     <div class="grid-container">
         {% for information in info %}
           <div class="box1">{{information[0] }}</div>
           <div class="box2">
               <h3>{{ information[1] }}</h3>
-              <p><a href={{information[1]}}>Source</a></p>
+              <p><a href=" {{ information[2] }} ">Source</a></p>
 
               <p>{{ information[3] }} </p>
 

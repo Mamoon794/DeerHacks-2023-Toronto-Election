@@ -113,3 +113,22 @@ background-color: rgba(0, 0, 0, 0.2); /* change the alpha value to adjust the op
 .last{
     padding-top: 10px;
 }
+
+
+.icon::before {
+  content: "\f1f0"; /* Insert the fontawesome icon */
+  font-family: FontAwesome; /* Set the font family */
+  font-size: 20px; /* Set the font size */
+  color: red; /* Set the color */
+  margin-right: 5px; /* Add some spacing */
+}
+
+/* Set the background image */
+.image-icon {
+  width: 50px;
+  height: 50px;
+  background-image: url('twitter.png');
+  background-size: cover;
+  display: inline-block;
+  margin-right: 10px;
+}

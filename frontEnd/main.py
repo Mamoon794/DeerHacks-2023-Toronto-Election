@@ -14,27 +14,39 @@ people = [
     {
         'name': 'Ana Bailao',
         'last': 'bailao',
+        'socials' : ['https://twitter.com/anabailaoto?s=21&t=0hUer5sbI_vXxFVCBF5Ltw',
+                     'https://instagram.com/anabailaoto?igshid=YmMyMTA2M2Y=', 'https://anabailao.ca/latest-news']
 
     },
     {
         'name': 'Brad Bradford',
         'last': 'bradford',
+        'socials' : ['https://twitter.com/bradmbradford?s=21&t=0hUer5sbI_vXxFVCBF5Ltw',
+                     'https://instagram.com/bradfordgrams?igshid=YmMyMTA2M2Y=', 'https://www.votebradford.ca/priorities']
     },
     {
         'name': 'Josh Matlow',
         'last': 'matlow',
+        'socials': ['https://twitter.com/joshmatlow?s=21&t=0hUer5sbI_vXxFVCBF5Ltw',
+                     'https://instagram.com/joshmatlow?igshid=YmMyMTA2M2Y=', 'https://www.votematlow.ca/news']
     },
     {
         'name': 'Mark Saunders',
         'last': 'saunders',
+        'socials': ['https://twitter.com/marksaunders_to?s=21&t=0hUer5sbI_vXxFVCBF5Ltw',
+                     'https://instagram.com/mark_saunders_to?igshid=YmMyMTA2M2Y=', 'https://marksaundersfortoronto.ca/news']
     },
     {
         'name': 'Mitzie Hunter',
         'last': 'hunter',
+        'socials': ['https://twitter.com/mitziehunter?s=21&t=0hUer5sbI_vXxFVCBF5Ltw',
+                     'https://instagram.com/mppmitziehunter?igshid=YmMyMTA2M2Y=', 'https://www.mitzieformayor.ca/news']
     },
     {
         'name': 'Olivia Chow',
         'last': 'chow',
+        'socials' : [' https://twitter.com/oliviachow?s=21&t=0hUer5sbI_vXxFVCBF5Ltw',
+                     'https://instagram.com/oliviachow?igshid=YmMyMTA2M2Y=', 'https://www.oliviachow.ca/updates']
 
     }]
 
@@ -81,6 +93,8 @@ def home():
             response_data = response.json()
 
             make_info = []
+
+            print(response_data)
 
             for respon in response_data['message']['documents']:
                 if respon['sentiment'] == 'protransit':
