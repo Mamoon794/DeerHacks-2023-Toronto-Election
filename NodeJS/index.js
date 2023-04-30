@@ -123,30 +123,30 @@ async function newArticle(testWebsite) {
         return "Unsupported website";
     }
     // console.log(websiteText);
-    // writeToDatebase(testWebsite, websiteText, network);
-    summary = await cohereSummary(websiteText);
-    console.log(summary);
-    candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-    console.log(candidate);
-    let sentiment = await cohereClassify(websiteText);
-    console.log(sentiment.prediction);
-    console.log(sentiment.confidence);
-    if (sentiment.prediction.includes("protransit")) {
-        transit = sentiment.confidence;
-        crime = 0;
-        housing = 0;
-    }
-    else if (sentiment.prediction.includes("anticrime")) {
-        transit = 0;
-        crime = sentiment.confidence;
-        housing = 0;
-    }
-    else if (sentiment.prediction.includes("prohousing")) {
-        transit = 0;
-        crime = 0;
-        housing = sentiment.confidence;
-    }
-    await writeMongo(testWebsite, network, summary, candidate, transit, crime, housing, sentiment.prediction);
+    writeToDatebase(testWebsite, websiteText, network);
+    // summary = await cohereSummary(websiteText);
+    // console.log(summary);
+    // candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+    // console.log(candidate);
+    // let sentiment = await cohereClassify(websiteText);
+    // console.log(sentiment.prediction);
+    // console.log(sentiment.confidence);
+    // if (sentiment.prediction.includes("protransit")) {
+    //     transit = sentiment.confidence;
+    //     crime = 0;
+    //     housing = 0;
+    // }
+    // else if (sentiment.prediction.includes("anticrime")) {
+    //     transit = 0;
+    //     crime = sentiment.confidence;
+    //     housing = 0;
+    // }
+    // else if (sentiment.prediction.includes("prohousing")) {
+    //     transit = 0;
+    //     crime = 0;
+    //     housing = sentiment.confidence;
+    // }
+    // await writeMongo(testWebsite, network, summary, candidate, transit, crime, housing, sentiment.prediction);
     return "Wrote to database";
 }
 
