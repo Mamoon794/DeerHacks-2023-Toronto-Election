@@ -10,6 +10,9 @@ import {json} from "express";
 // var express  = require('express');
 import express from "express";
 import puppeteer from "puppeteer";
+
+import request from "request"
+
 var app = express();
 var port = 3000;
 
@@ -36,9 +39,18 @@ app.post('/post', async (req, res) => {
             'action': 'newArticle',
             'message': message
         });
-        res.send(jsontext);
+        
+    request.post('http://localhost:5000/receive_data', { json: data }, (err, res, body) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(`Response: ${body}`);
+  });
+
     } else if (requestInfo['action'].includes('retrieveArticle')) {
         let articles = await fetchDB(requestInfo['candidate'], requestInfo['topic'])
+        console.log("STARTIT");
         console.log(articles);
         var jsontext = JSON.stringify({
             'action': 'retrieveArticle',
