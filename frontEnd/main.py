@@ -65,8 +65,6 @@ def home():
                 data = json.dumps(data)
                 response = requests.post("http://localhost:5001/", json=data)
                 response_data = response.json()
-                if response_data == 200:
-                    print("okay")
 
 
             return render_template('home.html', options=stuff[0], categories=stuff[1], politician=stuff[2],
@@ -93,8 +91,6 @@ def home():
             response_data = response.json()
 
             make_info = []
-
-            print(response_data)
 
             for respon in response_data['message']['documents']:
                 if respon['sentiment'] == 'protransit':
