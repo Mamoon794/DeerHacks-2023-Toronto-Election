@@ -9,73 +9,32 @@ url = "http://localhost:3000/post?data="
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.INFO)
 
-categories = ['tax', 'protransit', 'therapy', 'drug', 'water', 'fire']
+categories = ['protransit', 'prohousing', 'anticrime']
 people = [{
     'name': 'Mark saunders',
     'last': 'saunders',
-    'protransit': [
-        ["this is a pretty long heading that is going to be used for the main program"
-         " which has not been properly made yet", "0.3", "CBC news"],
-        ["this is another pretty long heading that is going to be used for the main program"
-         " which has not been properly made yet", "0.9", "CBC news"]
-    ]
     },
     {
         'name': 'Olivia Chow',
         'last': 'chow',
-        'categories': ['tax', 'pro-transit'],
-        'protransit': [
-            ["this is a pretty long heading that is going to be used for the main program"
-                 " which has not been properly made yet", "0.3", "CBC news"],
-            ["this is another pretty long heading that is going to be used for the main program"
-                 " which has not been properly made yet", "0.9", "CBC news"]
-                 ]
 
     },
     {
         'name': 'Ana Bailao',
         'last': 'bailao',
-        'categories': ['drug therapy', 'tax'],
-        'protransit': [
-            ["this is a pretty long heading that is going to be used for the main program"
-                 " which has not been properly made yet", "0.3", "CBC news"],
-            ["this is another pretty long heading that is going to be used for the main program"
-                 " which has not been properly made yet", "0.9", "CBC news"]
-                 ]
 
     },
     {
         'name':'Josh Matlow',
         'last': 'matlow',
-        'categories': ['transit', 'water'],
-        'protransit': [
-            ["this is a pretty long heading that is going to be used for the main program"
-             " which has not been properly made yet", "0.3", "CBC news"],
-            ["this is another pretty long heading that is going to be used for the main program"
-             " which has not been properly made yet", "0.9", "CBC news"]
-        ]
     },
     {
         'name': 'Brad Bradford',
         'last': 'bradford',
-        'categories': ['water', 'fire'],
-        'protransit': [
-            ["this is a pretty long heading that is going to be used for the main program"
-             " which has not been properly made yet", "0.3", "CBC news"],
-            ["this is another pretty long heading that is going to be used for the main program"
-             " which has not been properly made yet", "0.9", "CBC news"]
-        ]
     },
     {
         'name': 'Mitzie Hunter',
         'last': 'hunter',
-        'categories': ['fire', 'police', 'military'],
-        "fire": [
-            ["this is a pretty long heading that is going to be used for the main program"
-                 " which has not been properly made yet", "0.3", "CBC news"],
-            ["this is another pretty long heading that is going to be used for the main program"
-                 " which has not been properly made yet", "0.9", "CBC news"]
-                 ]
     }]
 
 
@@ -107,9 +66,26 @@ def home():
             response_data = response.json()
             print(response_data)
 
+            make_info = []
+
+            for respon in response_data['message']['documents']:
+                if respon['sentiment'] == 'protransit':
+                    make_info.append([respon['summary'], round(float(respon['transitSentiment']), 2),
+                                      respon['link'], respon['network']])
+
+                if respon['sentiment'] == 'prohousing':
+                    make_info.append([respon['summary'], round(float(respon['housingSentiment']), 2),
+                                      respon['link'], respon['network']])
+
+                if respon['sentiment'] == 'anticrime':
+                    make_info.append([respon['summary'], round(float(respon['crimeSentiment']), 2),
+                                      respon['link'], respon['network']])
+
+
+
 
             return render_template('home.html', options=temp_pep, categories=temp_cat, politician=theperson,
-                                   category=category, info=theperson[category])
+                                   category=category, info=make_info)
 
         if "categories" in request.form:
             temp_cat = categories.copy()

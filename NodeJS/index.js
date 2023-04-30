@@ -42,7 +42,7 @@ app.post('/post', async (req, res) => {
   console.log("POSTED");
 
     } else if (requestInfo['action'].includes('retrieveArticle')) {
-        let articles = await fetchDB(requestInfo['candidate'], requestInfo['topic'])
+        let articles = await fetchDB(requestInfo['candidate'], requestInfo['sentiment'])
         console.log("STARTIT");
         console.log(articles);
         var jsontext = JSON.stringify({
