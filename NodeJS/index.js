@@ -37,10 +37,7 @@ app.post('/post', async (req, res) => {
             'action': 'newArticle',
             'message': message
         });
-        
-    res.send(jsontext);
-  console.log("POSTED");
-
+        res.send(jsontext);
     } else if (requestInfo['action'].includes('retrieveArticle')) {
         let articles = await fetchDB(requestInfo['candidate'], requestInfo['sentiment'])
         console.log("STARTIT");
@@ -49,13 +46,46 @@ app.post('/post', async (req, res) => {
             'action': 'retrieveArticle',
             'message': articles
         });
-        console.log("HERERRER");
         console.log(jsontext);
         res.send(jsontext);
-          console.log("POSTED");
+    } else if (requestInfo['action'].includes('newTranscript')) {
+        console.log(requestInfo['link']);
+        let message = await newTranscript(requestInfo['link'], requestInfo['transcript'], requestInfo['network']);
+        var jsontext = JSON.stringify({
+            'action': 'newTranscript',
+            'message': message
+        });
+        res.send(jsontext);
     }
 }).listen(3000);
 console.log("Server is running! (listening on http://localhost:" + port + ")");
+
+async function newTranscript(link, transcript, network) {
+    summary = await cohereSummary(transcript);
+    console.log(summary);
+    candidate = (await cohereClassify(transcript, "candidate")).prediction;
+    console.log(candidate);
+    let sentiment = await cohereClassify(transcript);
+    console.log(sentiment.prediction);
+    console.log(sentiment.confidence);
+    if (sentiment.prediction.includes("protransit")) {
+        transit = sentiment.confidence;
+        crime = 0;
+        housing = 0;
+    }
+    else if (sentiment.prediction.includes("anticrime")) {
+        transit = 0;
+        crime = sentiment.confidence;
+        housing = 0;
+    }
+    else if (sentiment.prediction.includes("prohousing")) {
+        transit = 0;
+        crime = 0;
+        housing = sentiment.confidence;
+    }
+    await writeMongo(link, network, summary, candidate, transit, crime, housing, sentiment.prediction);
+    return "Wrote to database";
+}
 
 async function newArticle(testWebsite) {
     if (testWebsite.includes("cbc")) {

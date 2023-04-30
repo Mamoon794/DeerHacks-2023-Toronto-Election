@@ -7,13 +7,20 @@ import json
 from pathlib import Path
 import pymongo
 import requests
-from flask import Flask
+from flask import Flask, request, make_response
 
 from youtubesearchpython import VideosSearch
 from youtube_transcript_api import YouTubeTranscriptApi
 
 app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
+def home():
+    data = request.get_json()
+    url = data['url']
+    result = get_youtube_video_data_from_url(url)
+    result = make_response(result, 200)
+    return result
+
 
 def get_youtube_video_data_from_url(url) -> list[dict[str, str, str]]:
     """
@@ -25,11 +32,24 @@ def get_youtube_video_data_from_url(url) -> list[dict[str, str, str]]:
     videoInfo = bs(url_opener, features="html.parser")
     channel_title = str(videoInfo.find("link", itemprop="name"))
     publisher = channel_title[len('<link content="'):-len('" itemprop="name"/>')]
-    x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': get_youtube_video_transcript(id), }
+    transcript = get_youtube_video_transcript(id)
+    n = len(transcript)
+    partition = n // 1000
+    for i in range(partition):
+        part = transcript[i:i+1000]
+        x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': part}
+        x = json.dumps(x)
+        urls = 'https://localhost:3000/post?data='
+        urls += x
+        requests.post(urls)
+    part = transcript[partition:]
+    x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': part}
     x = json.dumps(x)
     urls = 'https://localhost:3000/post?data='
     urls += x
-    requests.post(urls)
+    var = requests.post(urls)
+    response_data = var.json()
+    return response_data
 
 
 def get_youtube_video_data_from_keyword(keyword: str, limit: int = 10) -> list[dict[str, str, str]]:
@@ -59,23 +79,10 @@ def get_youtube_video_transcript(video_id: str) -> str:
 
 
 if __name__ == '__main__':
-    channels = ['cbc', 'ctv', 'cp24', 'thestar']
-    candidates = ['olivia chow', 'ana bailao', 'josh matlow', 'mark saunders', 'brad bradford', 'mitzie hunter']
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["mydatabase"]
-    mycol = mydb["customers"]
-    # print list of the _id values of the inserted documents:
+    app.run(debug=True, port=5001)
+    home()
 
-    f = open("transcript_sample.json", "w")
-    urls = ['https://www.youtube.com/watch?v=0KYQYc8MZNE','https://www.youtube.com/watch?v=RCtIHYA3Zm4',
-            'https://www.youtube.com/watch?v=sE1tra0B9oE','https://www.youtube.com/watch?v=FjtzgnfIFZI',
-            'https://www.youtube.com/watch?v=1cT1FQ5JBXk', 'https://www.youtube.com/watch?v=mUdB_THPJe8',
-            'https://www.youtube.com/watch?v=TY4PoW0mNqE', 'https://www.youtube.com/watch?v=MQbSRmQhugo',
-            'https://www.youtube.com/watch?v=0vKp8vR4v-A', 'https://www.youtube.com/watch?v=QrDuckA7d4c']
-    result = []
-    for url in urls:
-        result.append({'link': url, 'transcript': get_youtube_video_data_from_url(url)['transcript']})
-    print(result)
+
 
 
 
