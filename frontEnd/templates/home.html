@@ -48,20 +48,19 @@
           <div class="box1">{{information[0] }}</div>
           <div class="box2">
               <h3>{{ information[1] }}</h3>
-              <p>{{ information[2] }} </p>
-              <p>Read more here</p>
+              <p><a href={{information[1]}}>Source</a></p>
+
+              <p>{{ information[3] }} </p>
+
           </div>
         {% endfor %}
 
     </div>
+    <abbr class="hovering" title="If we missed anything, please provide us with the link">Did we miss an anything?</abbr>
 
-    <div class="h1thing">
-        <h1>Did we miss an article?</h1>
-    </div>
-
-    <form action="/" method="POST">
-        <input type="text" id="url" name="give url">
-        <button class="btn" type="submit" name="submit-btn" value="submit" onclick="this.form.submit()">Submit</button>
+    <form action="/" method="POST" class="last">
+        <input type="text" class="textbox" id="url" name="give url">
+        <button class="btn" type="submit" name="submit" value="submit" onclick="this.form.submit()">Submit</button>
     </form>
 
 
