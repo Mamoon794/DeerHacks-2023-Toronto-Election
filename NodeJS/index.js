@@ -38,13 +38,7 @@ app.post('/post', async (req, res) => {
             'message': message
         });
         
-    request.post('http://localhost:5000/receive_data', { json: jsontext }, (err, res, body) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(`Response: ${body}`);
-  });
+    res.send(jsontext);
   console.log("POSTED");
 
     } else if (requestInfo['action'].includes('retrieveArticle')) {
@@ -55,13 +49,9 @@ app.post('/post', async (req, res) => {
             'action': 'retrieveArticle',
             'message': articles
         });
-        request.post('http://127.0.0.1:5000/receive_data', { json: jsontext }, (err, res, body) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            console.log(`Response: ${body}`);
-          });
+        console.log("HERERRER");
+        console.log(jsontext);
+        res.send(jsontext);
           console.log("POSTED");
     }
 }).listen(3000);
