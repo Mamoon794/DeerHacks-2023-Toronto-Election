@@ -15,6 +15,7 @@ h1{
     width: 70%;
     background-color: white;
     opacity: 0.6;
+    padding-bottom: 20px;
 }
 
 p{
@@ -27,6 +28,7 @@ select{
     width: 200px;
     padding-left: 2px;
     font-size: 1.3em;
+    border-radius: 5px;
 }
 
 .grid-container {

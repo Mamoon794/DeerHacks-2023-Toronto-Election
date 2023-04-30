@@ -4,7 +4,9 @@ h1 {
 
 #title {
     margin-top: 10%;
+    margin-bottom: 10%;
     font-size: 130%;
+    padding: 10px;
 }
 
 #candidate-selection {
