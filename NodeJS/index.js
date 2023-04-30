@@ -38,13 +38,14 @@ app.post('/post', async (req, res) => {
             'message': message
         });
         
-    request.post('http://localhost:5000/receive_data', { json: data }, (err, res, body) => {
+    request.post('http://localhost:5000/receive_data', { json: jsontext }, (err, res, body) => {
     if (err) {
       console.error(err);
       return;
     }
     console.log(`Response: ${body}`);
   });
+  console.log("POSTED");
 
     } else if (requestInfo['action'].includes('retrieveArticle')) {
         let articles = await fetchDB(requestInfo['candidate'], requestInfo['topic'])
@@ -54,7 +55,14 @@ app.post('/post', async (req, res) => {
             'action': 'retrieveArticle',
             'message': articles
         });
-        res.send(jsontext);
+        request.post('http://127.0.0.1:5000/receive_data', { json: jsontext }, (err, res, body) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            console.log(`Response: ${body}`);
+          });
+          console.log("POSTED");
     }
 }).listen(3000);
 console.log("Server is running! (listening on http://localhost:" + port + ")");
@@ -391,4 +399,4 @@ async function refreshCandidates() {
             await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
         }    }
 }
-refreshCandidates();
+// refreshCandidates();
