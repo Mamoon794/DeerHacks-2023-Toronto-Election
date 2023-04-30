@@ -66,6 +66,16 @@ def home():
                 response = requests.post("http://localhost:5001/", json=data)
                 response_data = response.json()
 
+            else:
+                data = {"action": "newArticle", "link": getUrl}
+
+                data = json.dumps(data)
+                url += data
+                response = requests.post(url, json=data)
+                response_data = response.json()
+
+                print(response_data)
+
 
             return render_template('home.html', options=stuff[0], categories=stuff[1], politician=stuff[2],
                                    category=stuff[3], info=stuff[4])
