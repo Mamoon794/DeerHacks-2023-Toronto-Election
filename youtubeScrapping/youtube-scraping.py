@@ -7,10 +7,13 @@ import json
 from pathlib import Path
 import pymongo
 import requests
+from flask import Flask
 
 from youtubesearchpython import VideosSearch
 from youtube_transcript_api import YouTubeTranscriptApi
 
+app = Flask(__name__)
+@app.route("/", methods=['GET', 'POST'])
 
 def get_youtube_video_data_from_url(url) -> list[dict[str, str, str]]:
     """
@@ -22,7 +25,7 @@ def get_youtube_video_data_from_url(url) -> list[dict[str, str, str]]:
     videoInfo = bs(url_opener, features="html.parser")
     channel_title = str(videoInfo.find("link", itemprop="name"))
     publisher = channel_title[len('<link content="'):-len('" itemprop="name"/>')]
-    x = {'link': url, 'network': publisher, 'transcript': get_youtube_video_transcript(id)}
+    x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': get_youtube_video_transcript(id), }
     x = json.dumps(x)
     urls = 'https://localhost:3000/post?data='
     urls += x
