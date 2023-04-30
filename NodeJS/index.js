@@ -1,13 +1,11 @@
 import {scrapeWebsite} from "./puppeteerScrape.js";
 import {cohereClassify, cohereSummary} from "./cohereSummary.js";
-import {writeMongo} from "./mongoDatabase.js";
+import {fetchDuplicate, writeMongo} from "./mongoDatabase.js";
 import {fetchDB} from "./mongoDatabase.js";
 import {scrapeLinks} from "./puppeteerScrape.js";
 import cohere from "cohere-ai";
 
-// const { json } = require('express');
 import {json} from "express";
-// var express  = require('express');
 import express from "express";
 import puppeteer from "puppeteer";
 
@@ -105,17 +103,17 @@ async function newArticle(testWebsite) {
     let sentiment = await cohereClassify(websiteText);
     console.log(sentiment.prediction);
     console.log(sentiment.confidence);
-    if (sentiment.prediction.includes("pro-transit")) {
+    if (sentiment.prediction.includes("protransit")) {
         transit = sentiment.confidence;
         crime = 0;
         housing = 0;
     }
-    else if (sentiment.prediction.includes("anti-crime")) {
+    else if (sentiment.prediction.includes("anticrime")) {
         transit = 0;
         crime = sentiment.confidence;
         housing = 0;
     }
-    else if (sentiment.prediction.includes("pro-housing")) {
+    else if (sentiment.prediction.includes("prohousing")) {
         transit = 0;
         crime = 0;
         housing = sentiment.confidence;
@@ -138,13 +136,36 @@ async function refreshCandidates() {
     finalList = [...new Set(finalList)];
     console.log(finalList);
     for (var i in finalList) {
-        websiteText = await scrapeWebsite(finalList[i],".sqs-block-content");
-        websiteText = websiteText[0].replace(/\s+/g,' ').trim();
-        console.log(websiteText);
-        summary = await cohereSummary(websiteText);
-        console.log(summary);
-        candidate = await cohereClassify(websiteText);
-        console.log(candidate);
+        let linkResult = await fetchDuplicate(finalList[i]);
+        console.log(linkResult.documents.length);
+        if (linkResult.documents.length == 0) {
+            websiteText = await scrapeWebsite(finalList[i],".sqs-block-content");
+            websiteText = websiteText[0].replace(/\s+/g,' ').trim();
+            console.log(websiteText);
+            summary = await cohereSummary(websiteText);
+            console.log(summary);
+            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+            console.log(candidate);
+            let sentiment = await cohereClassify(websiteText);
+            console.log(sentiment.prediction);
+            console.log(sentiment.confidence);
+            if (sentiment.prediction.includes("protransit")) {
+                transit = sentiment.confidence;
+                crime = 0;
+                housing = 0;
+            }
+            else if (sentiment.prediction.includes("anticrime")) {
+                transit = 0;
+                crime = sentiment.confidence;
+                housing = 0;
+            }
+            else if (sentiment.prediction.includes("prohousing")) {
+                transit = 0;
+                crime = 0;
+                housing = sentiment.confidence;
+            }
+            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+        }
     }
 
     // chow
@@ -162,13 +183,34 @@ async function refreshCandidates() {
     finalList = [...new Set(finalList)];
     console.log(finalList);
     for (var i in finalList) {
-        websiteText = await scrapeWebsite(finalList[i],"div p");
-        websiteText = websiteText.join().trim();
-        console.log(websiteText);
-        summary = await cohereSummary(websiteText);
-        console.log(summary);
-        candidate = await cohereClassify(websiteText);
-        console.log(candidate);
+        let linkResult = await fetchDuplicate(finalList[i]);
+        console.log(linkResult.documents.length);
+        if (linkResult.documents.length == 0) {
+            websiteText = await scrapeWebsite(finalList[i], "div p");
+            websiteText = websiteText.join().trim();
+            console.log(websiteText);
+            summary = await cohereSummary(websiteText);
+            console.log(summary);
+            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+            console.log(candidate);
+            let sentiment = await cohereClassify(websiteText);
+            console.log(sentiment.prediction);
+            console.log(sentiment.confidence);
+            if (sentiment.prediction.includes("protransit")) {
+                transit = sentiment.confidence;
+                crime = 0;
+                housing = 0;
+            } else if (sentiment.prediction.includes("anticrime")) {
+                transit = 0;
+                crime = sentiment.confidence;
+                housing = 0;
+            } else if (sentiment.prediction.includes("prohousing")) {
+                transit = 0;
+                crime = 0;
+                housing = sentiment.confidence;
+            }
+            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+        }
     }
 
     // mitzie
@@ -185,13 +227,34 @@ async function refreshCandidates() {
     }
     console.log(finalList);
     for (var i in finalList) {
-        websiteText = await scrapeWebsite(finalList[i],".wixui-rich-text__text");
-        websiteText = websiteText.join().replace(/\s+/g,' ').trim();
-        console.log(websiteText);
-        summary = await cohereSummary(websiteText);
-        console.log(summary);
-        candidate = await cohereClassify(websiteText);
-        console.log(candidate);
+        let linkResult = await fetchDuplicate(finalList[i]);
+        console.log(linkResult.documents.length);
+        if (linkResult.documents.length == 0) {
+            websiteText = await scrapeWebsite(finalList[i],".wixui-rich-text__text");
+            websiteText = websiteText.join().replace(/\s+/g,' ').trim();
+            console.log(websiteText);
+            summary = await cohereSummary(websiteText);
+            console.log(summary);
+            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+            console.log(candidate);
+            let sentiment = await cohereClassify(websiteText);
+            console.log(sentiment.prediction);
+            console.log(sentiment.confidence);
+            if (sentiment.prediction.includes("protransit")) {
+                transit = sentiment.confidence;
+                crime = 0;
+                housing = 0;
+            } else if (sentiment.prediction.includes("anticrime")) {
+                transit = 0;
+                crime = sentiment.confidence;
+                housing = 0;
+            } else if (sentiment.prediction.includes("prohousing")) {
+                transit = 0;
+                crime = 0;
+                housing = sentiment.confidence;
+            }
+            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+        }
     }
 
     // bailao
@@ -208,13 +271,34 @@ async function refreshCandidates() {
     }
     console.log(finalList);
     for (var i in finalList) {
-        websiteText = await scrapeWebsite(finalList[i],"span");
-        websiteText = websiteText.join().replace(/\s+/g,' ').trim();
-        console.log(websiteText)
-        summary = await cohereSummary(websiteText);
-        console.log(summary);
-        candidate = await cohereClassify(websiteText);
-        console.log(candidate);
+        let linkResult = await fetchDuplicate(finalList[i]);
+        console.log(linkResult.documents.length);
+        if (linkResult.documents.length == 0) {
+            websiteText = await scrapeWebsite(finalList[i],"span");
+            websiteText = websiteText.join().replace(/\s+/g,' ').trim();
+            console.log(websiteText);
+            summary = await cohereSummary(websiteText);
+            console.log(summary);
+            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+            console.log(candidate);
+            let sentiment = await cohereClassify(websiteText);
+            console.log(sentiment.prediction);
+            console.log(sentiment.confidence);
+            if (sentiment.prediction.includes("protransit")) {
+                transit = sentiment.confidence;
+                crime = 0;
+                housing = 0;
+            } else if (sentiment.prediction.includes("anticrime")) {
+                transit = 0;
+                crime = sentiment.confidence;
+                housing = 0;
+            } else if (sentiment.prediction.includes("prohousing")) {
+                transit = 0;
+                crime = 0;
+                housing = sentiment.confidence;
+            }
+            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+        }
     }
 
     // bradford
@@ -234,13 +318,34 @@ async function refreshCandidates() {
     }
     console.log(finalList);
     for (var i in finalList) {
-        websiteText = await scrapeWebsite(finalList[i],"p span");
-        websiteText = websiteText.join().trim();
-        console.log(websiteText)
-        summary = await cohereSummary(websiteText);
-        console.log(summary);
-        candidate = await cohereClassify(websiteText);
-        console.log(candidate);
+        let linkResult = await fetchDuplicate(finalList[i]);
+        console.log(linkResult.documents.length);
+        if (linkResult.documents.length == 0) {
+            websiteText = await scrapeWebsite(finalList[i],"p span");
+            websiteText = websiteText.join().trim();
+            console.log(websiteText);
+            summary = await cohereSummary(websiteText);
+            console.log(summary);
+            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+            console.log(candidate);
+            let sentiment = await cohereClassify(websiteText);
+            console.log(sentiment.prediction);
+            console.log(sentiment.confidence);
+            if (sentiment.prediction.includes("protransit")) {
+                transit = sentiment.confidence;
+                crime = 0;
+                housing = 0;
+            } else if (sentiment.prediction.includes("anticrime")) {
+                transit = 0;
+                crime = sentiment.confidence;
+                housing = 0;
+            } else if (sentiment.prediction.includes("prohousing")) {
+                transit = 0;
+                crime = 0;
+                housing = sentiment.confidence;
+            }
+            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+        }
     }
 
     // saunders
@@ -257,13 +362,33 @@ async function refreshCandidates() {
     }
     console.log(finalList);
     for (var i in finalList) {
-        websiteText = await scrapeWebsite(finalList[i],"div p");
-        websiteText = websiteText.join().trim();
-        console.log(websiteText)
-        summary = await cohereSummary(websiteText);
-        console.log(summary);
-        candidate = await cohereClassify(websiteText);
-        console.log(candidate);
-    }
+        let linkResult = await fetchDuplicate(finalList[i]);
+        console.log(linkResult.documents.length);
+        if (linkResult.documents.length == 0) {
+            websiteText = await scrapeWebsite(finalList[i],"div p");
+            websiteText = websiteText.join().trim();
+            console.log(websiteText);
+            summary = await cohereSummary(websiteText);
+            console.log(summary);
+            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+            console.log(candidate);
+            let sentiment = await cohereClassify(websiteText);
+            console.log(sentiment.prediction);
+            console.log(sentiment.confidence);
+            if (sentiment.prediction.includes("protransit")) {
+                transit = sentiment.confidence;
+                crime = 0;
+                housing = 0;
+            } else if (sentiment.prediction.includes("anticrime")) {
+                transit = 0;
+                crime = sentiment.confidence;
+                housing = 0;
+            } else if (sentiment.prediction.includes("prohousing")) {
+                transit = 0;
+                crime = 0;
+                housing = sentiment.confidence;
+            }
+            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+        }    }
 }
-// refreshCandidates();
+refreshCandidates();
