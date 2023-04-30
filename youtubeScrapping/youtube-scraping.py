@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import pymongo
 import requests
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, jsonify
 
 from youtubesearchpython import VideosSearch
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -16,9 +16,12 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def home():
     data = request.get_json()
+    data = json.loads(data)
     url = data['url']
     result = get_youtube_video_data_from_url(url)
-    result = make_response(result, 200)
+    # print(result)
+    # result = json.loads(result)
+    result = make_response(jsonify(result), 200)
     return result
 
 
@@ -34,21 +37,24 @@ def get_youtube_video_data_from_url(url) -> list[dict[str, str, str]]:
     publisher = channel_title[len('<link content="'):-len('" itemprop="name"/>')]
     transcript = get_youtube_video_transcript(id)
     n = len(transcript)
-    partition = n // 1000
-    for i in range(partition):
-        part = transcript[i:i+1000]
-        x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': part}
-        x = json.dumps(x)
-        urls = 'https://localhost:3000/post?data='
-        urls += x
-        requests.post(urls)
-    part = transcript[partition:]
-    x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': part}
+    # partition = n // 1000
+    # for i in range(partition):
+    #     part = transcript[i:i+1000]
+    #     x = {'action': 'newTranscript', 'link': url, 'network': publisher, 'transcript': part}
+    #     x = json.dumps(x)
+    #     urls = 'https://localhost:3000/post?data='
+    #     urls += x
+    #     requests.post(urls)
+    part = transcript
+    x = {"action": "newTranscript", "link": url, "network": publisher, "transcript": transcript}
     x = json.dumps(x)
-    urls = 'https://localhost:3000/post?data='
+    urls = "http://localhost:3000/post?data="
     urls += x
-    var = requests.post(urls)
+    var = requests.post(urls, json=x)
     response_data = var.json()
+
+    urls = "http://localhost:3000/post?data="
+
     return response_data
 
 
