@@ -19,7 +19,7 @@ export async function scrapeLinks(website) {
     const browser = await puppeteer.launch({headless: 'new'});
     const page = await browser.newPage();
     await page.goto(website);
-    await page.screenshot({ path: "website.png", fullPage: true });
+    // await page.screenshot({ path: "website.png", fullPage: true });
     const findLinks = await page.evaluate(() =>
         Array.from(document.querySelectorAll("a")).map((info) => ({
             information: info.href.split()
