@@ -5,7 +5,7 @@ export async function scrapeWebsite(website, classSelector) {
     const page = await browser.newPage();
     await page.goto(website);
     // page.waitForSelector(classSelector).then(() => console.log("Selector loaded"));
-    await page.screenshot({ path: "website.png", fullPage: true });
+    // await page.screenshot({ path: "website.png", fullPage: true });
     let reviews = await page.evaluate((classSelector) => {
         return Array.from(document.querySelectorAll(classSelector)).map(x => x.textContent)
     }, classSelector);
