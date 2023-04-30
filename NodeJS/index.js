@@ -39,7 +39,7 @@ app.post('/post', async (req, res) => {
         });
         res.send(jsontext);
     } else if (requestInfo['action'].includes('retrieveArticle')) {
-        let articles = await fetchDB(requestInfo['candidate'], requestInfo['topic'])
+        let articles = await fetchDB(requestInfo['candidate'], requestInfo['sentiment'])
         console.log(articles);
         var jsontext = JSON.stringify({
             'action': 'retrieveArticle',
