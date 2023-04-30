@@ -91,17 +91,17 @@ async function newArticle(testWebsite) {
     let sentiment = await cohereClassify(websiteText);
     console.log(sentiment.prediction);
     console.log(sentiment.confidence);
-    if (sentiment.prediction.includes("pro-transit")) {
+    if (sentiment.prediction.includes("protransit")) {
         transit = sentiment.confidence;
         crime = 0;
         housing = 0;
     }
-    else if (sentiment.prediction.includes("anti-crime")) {
+    else if (sentiment.prediction.includes("anticrime")) {
         transit = 0;
         crime = sentiment.confidence;
         housing = 0;
     }
-    else if (sentiment.prediction.includes("pro-housing")) {
+    else if (sentiment.prediction.includes("prohousing")) {
         transit = 0;
         crime = 0;
         housing = sentiment.confidence;
@@ -137,17 +137,17 @@ async function refreshCandidates() {
             let sentiment = await cohereClassify(websiteText);
             console.log(sentiment.prediction);
             console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("pro-transit")) {
+            if (sentiment.prediction.includes("protransit")) {
                 transit = sentiment.confidence;
                 crime = 0;
                 housing = 0;
             }
-            else if (sentiment.prediction.includes("anti-crime")) {
+            else if (sentiment.prediction.includes("anticrime")) {
                 transit = 0;
                 crime = sentiment.confidence;
                 housing = 0;
             }
-            else if (sentiment.prediction.includes("pro-housing")) {
+            else if (sentiment.prediction.includes("prohousing")) {
                 transit = 0;
                 crime = 0;
                 housing = sentiment.confidence;
@@ -184,15 +184,15 @@ async function refreshCandidates() {
             let sentiment = await cohereClassify(websiteText);
             console.log(sentiment.prediction);
             console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("pro-transit")) {
+            if (sentiment.prediction.includes("protransit")) {
                 transit = sentiment.confidence;
                 crime = 0;
                 housing = 0;
-            } else if (sentiment.prediction.includes("anti-crime")) {
+            } else if (sentiment.prediction.includes("anticrime")) {
                 transit = 0;
                 crime = sentiment.confidence;
                 housing = 0;
-            } else if (sentiment.prediction.includes("pro-housing")) {
+            } else if (sentiment.prediction.includes("prohousing")) {
                 transit = 0;
                 crime = 0;
                 housing = sentiment.confidence;
@@ -228,15 +228,15 @@ async function refreshCandidates() {
             let sentiment = await cohereClassify(websiteText);
             console.log(sentiment.prediction);
             console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("pro-transit")) {
+            if (sentiment.prediction.includes("protransit")) {
                 transit = sentiment.confidence;
                 crime = 0;
                 housing = 0;
-            } else if (sentiment.prediction.includes("anti-crime")) {
+            } else if (sentiment.prediction.includes("anticrime")) {
                 transit = 0;
                 crime = sentiment.confidence;
                 housing = 0;
-            } else if (sentiment.prediction.includes("pro-housing")) {
+            } else if (sentiment.prediction.includes("prohousing")) {
                 transit = 0;
                 crime = 0;
                 housing = sentiment.confidence;
@@ -272,15 +272,15 @@ async function refreshCandidates() {
             let sentiment = await cohereClassify(websiteText);
             console.log(sentiment.prediction);
             console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("pro-transit")) {
+            if (sentiment.prediction.includes("protransit")) {
                 transit = sentiment.confidence;
                 crime = 0;
                 housing = 0;
-            } else if (sentiment.prediction.includes("anti-crime")) {
+            } else if (sentiment.prediction.includes("anticrime")) {
                 transit = 0;
                 crime = sentiment.confidence;
                 housing = 0;
-            } else if (sentiment.prediction.includes("pro-housing")) {
+            } else if (sentiment.prediction.includes("prohousing")) {
                 transit = 0;
                 crime = 0;
                 housing = sentiment.confidence;
@@ -319,15 +319,15 @@ async function refreshCandidates() {
             let sentiment = await cohereClassify(websiteText);
             console.log(sentiment.prediction);
             console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("pro-transit")) {
+            if (sentiment.prediction.includes("protransit")) {
                 transit = sentiment.confidence;
                 crime = 0;
                 housing = 0;
-            } else if (sentiment.prediction.includes("anti-crime")) {
+            } else if (sentiment.prediction.includes("anticrime")) {
                 transit = 0;
                 crime = sentiment.confidence;
                 housing = 0;
-            } else if (sentiment.prediction.includes("pro-housing")) {
+            } else if (sentiment.prediction.includes("prohousing")) {
                 transit = 0;
                 crime = 0;
                 housing = sentiment.confidence;
@@ -363,15 +363,15 @@ async function refreshCandidates() {
             let sentiment = await cohereClassify(websiteText);
             console.log(sentiment.prediction);
             console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("pro-transit")) {
+            if (sentiment.prediction.includes("protransit")) {
                 transit = sentiment.confidence;
                 crime = 0;
                 housing = 0;
-            } else if (sentiment.prediction.includes("anti-crime")) {
+            } else if (sentiment.prediction.includes("anticrime")) {
                 transit = 0;
                 crime = sentiment.confidence;
                 housing = 0;
-            } else if (sentiment.prediction.includes("pro-housing")) {
+            } else if (sentiment.prediction.includes("prohousing")) {
                 transit = 0;
                 crime = 0;
                 housing = sentiment.confidence;
