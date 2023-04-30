@@ -40,7 +40,6 @@ app.post('/post', async (req, res) => {
         res.send(jsontext);
     } else if (requestInfo['action'].includes('retrieveArticle')) {
         let articles = await fetchDB(requestInfo['candidate'], requestInfo['sentiment'])
-        console.log("STARTIT");
         console.log(articles);
         var jsontext = JSON.stringify({
             'action': 'retrieveArticle',
@@ -61,6 +60,7 @@ app.post('/post', async (req, res) => {
 console.log("Server is running! (listening on http://localhost:" + port + ")");
 
 async function newTranscript(link, transcript, network) {
+    // writeToDatebase(link, transcript, network);
     summary = await cohereSummary(transcript);
     console.log(summary);
     candidate = (await cohereClassify(transcript, "candidate")).prediction;
@@ -122,8 +122,8 @@ async function newArticle(testWebsite) {
         console.log("Unsupported website");
         return "Unsupported website";
     }
-
     // console.log(websiteText);
+    // writeToDatebase(testWebsite, websiteText, network);
     summary = await cohereSummary(websiteText);
     console.log(summary);
     candidate = (await cohereClassify(websiteText, "candidate")).prediction;
@@ -151,272 +151,95 @@ async function newArticle(testWebsite) {
 }
 
 async function refreshCandidates() {
-    // matlow
-    let linkList = await scrapeLinks("https://www.votematlow.ca/news");
+    await candidateWebsite("https://marksaundersfortoronto.ca/news", "https://marksaundersfortoronto.ca/news/", "div p", 1);
+    await candidateWebsite("https://www.votebradford.ca/priorities", "https://www.votebradford.ca/", "p span", 1, 1);
+    await candidateWebsite("https://anabailao.ca/latest-news", "https://anabailao.ca/latest-news/", "span", 2, 0, 1);
+    await candidateWebsite("https://www.mitzieformayor.ca/news", "https://www.mitzieformayor.ca", ".wixui-rich-text__text", 2);
+    await candidateWebsite("https://www.oliviachow.ca/updates", "https://www.oliviachow.ca/", "div p", 1, 2, 2);
+    await candidateWebsite("https://www.votematlow.ca/news", "news/", ".sqs-block-content", 2, 2);
+}
+
+async function candidateWebsite(website, extractText, selector, trimMethod, listMethod, extractMethod) {
+    let linkList = await scrapeLinks(website);
+    // console.log(linkList);
     let finalList = [];
     let counter = 0;
-    for (var i in linkList) {
-        if (linkList[i][0].includes("news/")) {
-            finalList[counter] = linkList[i][0];
-            counter++;
-        }
+    switch (extractMethod) {
+        case 1:
+            for (var i in linkList) {
+                if (linkList[i][0].includes(extractText) && linkList[i][0].includes("-")) {
+                    finalList[counter] = linkList[i][0];
+                    counter++;
+                }
+            }
+            break;
+        case 2:
+            for (var i in linkList) {
+                if (linkList[i][0].includes(extractText) && linkList[i][0].includes("_") && !linkList[i][0].includes("user_sessions")) {
+                    finalList[counter] = linkList[i][0];
+                    counter++;
+                }
+            }
+            break;
+        default:
+            for (var i in linkList) {
+                if (linkList[i][0].includes(extractText)) {
+                    finalList[counter] = linkList[i][0];
+                    counter++;
+                }
+            }
+            break;
     }
-    finalList = [...new Set(finalList)];
+    switch(listMethod) {
+        case 1:
+            for (var i = 0; i < 8; i++) {
+                finalList.shift();
+            }
+            break;
+        case 2:
+            finalList = [...new Set(finalList)];
+            break;
+    }
     console.log(finalList);
-    for (var i in finalList) {
+    for (i in finalList) {
         let linkResult = await fetchDuplicate(finalList[i]);
         console.log(linkResult.documents.length);
         if (linkResult.documents.length == 0) {
-            websiteText = await scrapeWebsite(finalList[i],".sqs-block-content");
-            websiteText = websiteText[0].replace(/\s+/g,' ').trim();
-            console.log(websiteText);
-            summary = await cohereSummary(websiteText);
-            console.log(summary);
-            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-            console.log(candidate);
-            let sentiment = await cohereClassify(websiteText);
-            console.log(sentiment.prediction);
-            console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("protransit")) {
-                transit = sentiment.confidence;
-                crime = 0;
-                housing = 0;
+            websiteText = await scrapeWebsite(finalList[i], selector);
+            switch(trimMethod) {
+                case 1:
+                    websiteText = websiteText.join().trim();
+                    break;
+                case 2:
+                    websiteText = websiteText.join().replace(/\s+/g,' ').trim();
+                    break;
             }
-            else if (sentiment.prediction.includes("anticrime")) {
-                transit = 0;
-                crime = sentiment.confidence;
-                housing = 0;
-            }
-            else if (sentiment.prediction.includes("prohousing")) {
-                transit = 0;
-                crime = 0;
-                housing = sentiment.confidence;
-            }
-            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
+            writeToDatebase(finalList[i], websiteText, "Candidate Website");
         }
     }
+}
 
-    // chow
-    linkList = await scrapeLinks("https://www.oliviachow.ca/updates");
-    // console.log(linkList);
-    finalList = [];
-    counter = 0;
-    for (var i in linkList) {
-        // console.log(linkList[i][0]);
-        if (linkList[i][0].includes("https://www.oliviachow.ca/") && linkList[i][0].includes("_") && !linkList[i][0].includes("user_sessions")) {
-            finalList[counter] = linkList[i][0];
-            counter++;
-        }
+async function writeToDatebase(link, websiteText, network) {
+    summary = await cohereSummary(websiteText);
+    console.log(summary);
+    candidate = (await cohereClassify(websiteText, "candidate")).prediction;
+    console.log(candidate);
+    let sentiment = await cohereClassify(websiteText);
+    console.log(sentiment.prediction);
+    console.log(sentiment.confidence);
+    if (sentiment.prediction.includes("protransit")) {
+        transit = sentiment.confidence;
+        crime = 0;
+        housing = 0;
+    } else if (sentiment.prediction.includes("anticrime")) {
+        transit = 0;
+        crime = sentiment.confidence;
+        housing = 0;
+    } else if (sentiment.prediction.includes("prohousing")) {
+        transit = 0;
+        crime = 0;
+        housing = sentiment.confidence;
     }
-    finalList = [...new Set(finalList)];
-    console.log(finalList);
-    for (var i in finalList) {
-        let linkResult = await fetchDuplicate(finalList[i]);
-        console.log(linkResult.documents.length);
-        if (linkResult.documents.length == 0) {
-            websiteText = await scrapeWebsite(finalList[i], "div p");
-            websiteText = websiteText.join().trim();
-            console.log(websiteText);
-            summary = await cohereSummary(websiteText);
-            console.log(summary);
-            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-            console.log(candidate);
-            let sentiment = await cohereClassify(websiteText);
-            console.log(sentiment.prediction);
-            console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("protransit")) {
-                transit = sentiment.confidence;
-                crime = 0;
-                housing = 0;
-            } else if (sentiment.prediction.includes("anticrime")) {
-                transit = 0;
-                crime = sentiment.confidence;
-                housing = 0;
-            } else if (sentiment.prediction.includes("prohousing")) {
-                transit = 0;
-                crime = 0;
-                housing = sentiment.confidence;
-            }
-            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
-        }
-    }
-
-    // mitzie
-    linkList = await scrapeLinks("https://www.mitzieformayor.ca/news");
-    // console.log(linkList);
-    finalList = [];
-    counter = 0;
-    for (var i in linkList) {
-        // console.log(linkList[i][0]);
-        if (linkList[i][0].includes("https://www.mitzieformayor.ca")) {
-            finalList[counter] = linkList[i][0];
-            counter++;
-        }
-    }
-    console.log(finalList);
-    for (var i in finalList) {
-        let linkResult = await fetchDuplicate(finalList[i]);
-        console.log(linkResult.documents.length);
-        if (linkResult.documents.length == 0) {
-            websiteText = await scrapeWebsite(finalList[i],".wixui-rich-text__text");
-            websiteText = websiteText.join().replace(/\s+/g,' ').trim();
-            console.log(websiteText);
-            summary = await cohereSummary(websiteText);
-            console.log(summary);
-            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-            console.log(candidate);
-            let sentiment = await cohereClassify(websiteText);
-            console.log(sentiment.prediction);
-            console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("protransit")) {
-                transit = sentiment.confidence;
-                crime = 0;
-                housing = 0;
-            } else if (sentiment.prediction.includes("anticrime")) {
-                transit = 0;
-                crime = sentiment.confidence;
-                housing = 0;
-            } else if (sentiment.prediction.includes("prohousing")) {
-                transit = 0;
-                crime = 0;
-                housing = sentiment.confidence;
-            }
-            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
-        }
-    }
-
-    // bailao
-    linkList = await scrapeLinks("https://anabailao.ca/latest-news");
-    // console.log(linkList);
-    finalList = [];
-    counter = 0;
-    for (var i in linkList) {
-        // console.log(linkList[i][0]);
-        if (linkList[i][0].includes("https://anabailao.ca/latest-news/") && linkList[i][0].includes("-")) {
-            finalList[counter] = linkList[i][0];
-            counter++;
-        }
-    }
-    console.log(finalList);
-    for (var i in finalList) {
-        let linkResult = await fetchDuplicate(finalList[i]);
-        console.log(linkResult.documents.length);
-        if (linkResult.documents.length == 0) {
-            websiteText = await scrapeWebsite(finalList[i],"span");
-            websiteText = websiteText.join().replace(/\s+/g,' ').trim();
-            console.log(websiteText);
-            summary = await cohereSummary(websiteText);
-            console.log(summary);
-            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-            console.log(candidate);
-            let sentiment = await cohereClassify(websiteText);
-            console.log(sentiment.prediction);
-            console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("protransit")) {
-                transit = sentiment.confidence;
-                crime = 0;
-                housing = 0;
-            } else if (sentiment.prediction.includes("anticrime")) {
-                transit = 0;
-                crime = sentiment.confidence;
-                housing = 0;
-            } else if (sentiment.prediction.includes("prohousing")) {
-                transit = 0;
-                crime = 0;
-                housing = sentiment.confidence;
-            }
-            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
-        }
-    }
-
-    // bradford
-    linkList = await scrapeLinks("https://www.votebradford.ca/priorities");
-    // console.log(linkList);
-    finalList = [];
-    counter = 0;
-    for (var i in linkList) {
-        // console.log(linkList[i][0]);
-        if (linkList[i][0].includes("https://www.votebradford.ca/")) {
-            finalList[counter] = linkList[i][0];
-            counter++;
-        }
-    }
-    for (var i = 0; i < 8; i++) {
-        finalList.shift();
-    }
-    console.log(finalList);
-    for (var i in finalList) {
-        let linkResult = await fetchDuplicate(finalList[i]);
-        console.log(linkResult.documents.length);
-        if (linkResult.documents.length == 0) {
-            websiteText = await scrapeWebsite(finalList[i],"p span");
-            websiteText = websiteText.join().trim();
-            console.log(websiteText);
-            summary = await cohereSummary(websiteText);
-            console.log(summary);
-            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-            console.log(candidate);
-            let sentiment = await cohereClassify(websiteText);
-            console.log(sentiment.prediction);
-            console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("protransit")) {
-                transit = sentiment.confidence;
-                crime = 0;
-                housing = 0;
-            } else if (sentiment.prediction.includes("anticrime")) {
-                transit = 0;
-                crime = sentiment.confidence;
-                housing = 0;
-            } else if (sentiment.prediction.includes("prohousing")) {
-                transit = 0;
-                crime = 0;
-                housing = sentiment.confidence;
-            }
-            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
-        }
-    }
-
-    // saunders
-    linkList = await scrapeLinks("https://marksaundersfortoronto.ca/news");
-    // console.log(linkList);
-    finalList = [];
-    counter = 0;
-    for (var i in linkList) {
-        // console.log(linkList[i][0]);
-        if (linkList[i][0].includes("https://marksaundersfortoronto.ca/news/")) {
-            finalList[counter] = linkList[i][0];
-            counter++;
-        }
-    }
-    console.log(finalList);
-    for (var i in finalList) {
-        let linkResult = await fetchDuplicate(finalList[i]);
-        console.log(linkResult.documents.length);
-        if (linkResult.documents.length == 0) {
-            websiteText = await scrapeWebsite(finalList[i],"div p");
-            websiteText = websiteText.join().trim();
-            console.log(websiteText);
-            summary = await cohereSummary(websiteText);
-            console.log(summary);
-            candidate = (await cohereClassify(websiteText, "candidate")).prediction;
-            console.log(candidate);
-            let sentiment = await cohereClassify(websiteText);
-            console.log(sentiment.prediction);
-            console.log(sentiment.confidence);
-            if (sentiment.prediction.includes("protransit")) {
-                transit = sentiment.confidence;
-                crime = 0;
-                housing = 0;
-            } else if (sentiment.prediction.includes("anticrime")) {
-                transit = 0;
-                crime = sentiment.confidence;
-                housing = 0;
-            } else if (sentiment.prediction.includes("prohousing")) {
-                transit = 0;
-                crime = 0;
-                housing = sentiment.confidence;
-            }
-            await writeMongo(finalList[i], "Candidate Website", summary, candidate, transit, crime, housing, sentiment.prediction);
-        }    }
+    await writeMongo(link, network, summary, candidate, transit, crime, housing, sentiment.prediction);
 }
 // refreshCandidates();
