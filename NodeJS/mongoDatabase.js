@@ -76,3 +76,28 @@ export async function fetchDB (candidate, sentiment) {
     // return JSON.stringify(res.data);
     return res.data;
 }
+
+export async function fetchDuplicate (link) {
+    var data = JSON.stringify({
+        "collection": mongoCollection,
+        "database": mongoDatabase,
+        "dataSource": mongoDataSource,
+        "filter": {"link": link},
+        // maximum number of results that are returned from database
+        "limit": 5
+    });
+
+    var config = {
+        method: 'post',
+        url: mongoReadEndPoint,
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Headers': '*',
+            'api-key': mongo_key,
+        },
+        data: data
+    };
+    const res = await axios(config);
+    // return JSON.stringify(res.data);
+    return res.data;
+}
