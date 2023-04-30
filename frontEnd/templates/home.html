@@ -73,15 +73,17 @@
         {% endfor %}
 
     </div>
-    <abbr class="hovering" title="If we missed anything, please provide us with the link">Did we miss an anything?</abbr>
+
+    {% endif %}
+
+    {% if politician and category %}
+
+<abbr class="hovering" title="If we missed anything, please provide us with the link">Did we miss anything?</abbr>
 
     <form action="/" method="POST" class="last">
         <input type="text" class="textbox" id="url" name="give url">
         <button class="btn" type="submit" name="submit" value="submit" onclick="this.form.submit()">Submit</button>
     </form>
-
-
-
     {% endif %}
 
 {% endblock content %}
